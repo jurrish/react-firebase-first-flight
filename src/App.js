@@ -7,15 +7,39 @@ class App extends Component {
     //app extends native component from react, but also do my special stuff through super
     super(props);
     this.state = {
-      data: null
+      data: null,
+      newData: ''
     };
+
+    this.dataRef = null;
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentDidMount() {
     //listen at the root of the tree (ref) for changes
-    database.ref().on('value', () => {
-      console.log('the data changed');
+    //or set the reference point as wowowowow.
+    this.dataRef = database.ref(`/WOWOWOWOW/${null}/hehehehe`);
+    this.dataRef.on('value', (snapshot) => {
+      this.setState({
+        data: snapshot.val()
+      });
     });
+  }
+
+  handleChange(event){
+    const newData = event.target.value;
+    this.setState(
+      {
+        newData
+      }
+    );
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    this.dataRef.push(this.state.newData);
+            //.set, .push, other things to set data dynamically
   }
 
   render() {
@@ -25,8 +49,12 @@ class App extends Component {
           <h2>Welcome to React and Firebase</h2>
         </div>
         <pre className="App--data">
-          One day, some data from Firebase will go here.
+          { JSON.stringify(this.state.data, null, 2) }
         </pre>
+        <input type="text" value={ this.state.newData } onChange={ this.handleChange } />
+        <form className="App--form" onSubmit={ this.handleSubmit }>
+        <input type="submit" />
+        </form>
       </div>
     );
   }

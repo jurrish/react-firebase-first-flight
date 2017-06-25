@@ -3,7 +3,6 @@ import firebase from 'firebase';
   // Initialize Firebase
 
   //place config object from .env here:
-  
   firebase.initializeApp(config);
 
 
